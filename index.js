@@ -5,10 +5,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const passport = require('passport');
 
 const routes = require('./routes/main');
 const passwordRoutes = require('./routes/password');
-const passport = require('passport');
+const secureRoutes = require('./routes/secure');
 const { response } = require('express');
 
 // setup mongoDB connection
@@ -39,7 +40,6 @@ app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-
 app.use(bodyParser.json()); // parse application/json
 app.use(cookieParser());
 app.use(cors({ credentials: true, origin: process.env.CORS_ORIGIN }));
-[];
 
 // require passport auth
 require('./auth/auth');
@@ -47,6 +47,7 @@ require('./auth/auth');
 // setup routes
 app.use('/', routes);
 app.use('/', passwordRoutes);
+app.use('/', passport.authenticate('jwt', { session: false }), secureRoutes);
 
 // catch all other routes, 'path' param defaults to '/'
 // Middleware is executed sequentially, so order is important
