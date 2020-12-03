@@ -10,7 +10,7 @@ router.get('/', (request, response) => {
 	response.send('hello world this is cool2');
 });
 
-router.get('/status', (request, response) => {
+router.get('/status', async (request, response) => {
 	//set status and payload at the same time
 	response.status(200).json({ message: 'ok', status: 200 });
 });
@@ -72,18 +72,19 @@ router.post('/login', async (request, response, next) => {
 			});
 		} catch (err) {
 			console.log(err);
-			[];
 			return next(err);
 		}
 	})(request, response, next);
 });
 
 router.post('/logout', (request, response) => {
-	if (Object.keys(request.body).length == 0) {
-		response.status(400).json({ message: 'invalid body', status: 400 });
-	} else {
-		response.status(200).json({ message: 'ok', status: 200 });
+	if (request.cookies) {
+		const refreshToken = request.cookies.refreshJwt;
+		if (refreshToken in tokenList) delete tokenList[refreshToken];
+		response.clearCookie('jwt');
+		response.clearCookie('refreshJwt');
 	}
+	response.status(200).json({ message: 'logged out', status: 200 });
 });
 
 router.post('/token', (request, response) => {
