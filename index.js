@@ -13,6 +13,7 @@ const secureRoutes = require('./routes/secure');
 const { response } = require('express');
 
 // setup mongoDB connection
+mongoose.set('useFindAndModify', false); // needed for depreciation warnings
 const uri = process.env.MONGO_CONNECTION_URL;
 const mongoConfig = {
 	useNewUrlParser: true,
