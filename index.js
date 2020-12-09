@@ -45,6 +45,15 @@ app.use(cors({ credentials: true, origin: process.env.CORS_ORIGIN }));
 // require passport auth
 require('./auth/auth');
 
+// Setup static assets
+// tell express.static() to look in 'public' for static assets
+app.use(express.static(__dirname + '/public'));
+
+// allow all re
+app.get('/', (request, response) => {
+	response.send(__dirname + '/index.html');
+});
+
 // setup routes
 app.use('/', routes);
 app.use('/', passwordRoutes);
