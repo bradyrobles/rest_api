@@ -5,10 +5,12 @@ const jwt = require('jsonwebtoken');
 const { urlencoded } = require('body-parser');
 const tokenList = {};
 
+/*
 // request - express object
 router.get('/', (request, response) => {
 	response.send('hello world this is cool2');
 });
+*/
 
 router.get('/status', async (request, response) => {
 	//set status and payload at the same time
