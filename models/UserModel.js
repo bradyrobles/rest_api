@@ -7,7 +7,10 @@ const UserSchema = new Schema({
 	email: {
 		type: String,
 		required: true,
-		unique: true,
+		index: {
+			unique: true,
+			dropDups: true,
+		},
 	},
 	password: {
 		type: String,
@@ -31,6 +34,12 @@ UserSchema.pre('save', async function (next) {
 	const hash = await bcrypt.hash(this.password, 10);
 	this.password = hash;
 	next();
+});
+
+UserSchema.on('index', function (err) {
+	if (err) {
+		console.error(err);
+	}
 });
 
 UserSchema.methods.isValidPassword = async function (password) {
