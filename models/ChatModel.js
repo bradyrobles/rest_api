@@ -6,12 +6,17 @@ const ChatSchema = new Schema({
 	email: {
 		type: String,
 		required: true,
-		unique: false,
 	},
 	message: {
 		type: String,
 		required: true,
 	},
+});
+
+ChatSchema.on('index', function (err) {
+	if (err) {
+		console.error(err);
+	}
 });
 
 const ChatModel = mongoose.model('chat', ChatSchema);
