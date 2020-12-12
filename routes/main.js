@@ -79,17 +79,9 @@ router.post('/login', async (request, response, next) => {
 	})(request, response, next);
 });
 
-router.post('/logout', (request, response) => {
-	if (request.cookies) {
-		const refreshToken = request.cookies.refreshJwt;
-		if (refreshToken in tokenList) delete tokenList[refreshToken];
-		response.clearCookie('jwt');
-		response.clearCookie('refreshJwt');
-	}
-	response.status(200).json({ message: 'logged out', status: 200 });
-});
+router.route('/logout').get(processLogoutRequest).post(processLogoutRequest);
 
-// update user 'jwt' and 'refreshToken'
+// update user's 'jwt' from provided 'refreshToken'
 router.post('/token', (request, response) => {
 	const { refreshToken } = request.body;
 	if (refreshToken in tokenList) {
@@ -111,6 +103,20 @@ router.post('/token', (request, response) => {
 		response.status(401).json({ message: 'unauthorized user', status: 401 });
 	}
 });
+
+function processLogoutRequest(request, response) {
+	if (request.cookies) {
+		const refreshToken = request.cookies.refreshJwt;
+		if (refreshToken in tokenList) delete tokenList[refreshToken];
+		response.clearCookie('jwt');
+		response.clearCookie('refreshJwt');
+	}
+	if (request.method === 'POST') {
+		response.status(200).json({ message: 'logged out', status: 200 });
+	} else if (request.method === 'GET') {
+		response.sendFile('logout.html', { root: './public' });
+	}
+}
 
 // Use this line so we can require this file in 'index.js'
 module.exports = router;
