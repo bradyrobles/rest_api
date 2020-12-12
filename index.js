@@ -45,11 +45,19 @@ app.use(cors({ credentials: true, origin: process.env.CORS_ORIGIN }));
 // require passport auth
 require('./auth/auth');
 
+app.get(
+	'/game.html',
+	passport.authenticate('jwt', { session: false }), // protects this route
+	(request, response) => {
+		response.status(200).json(request.user);
+	}
+);
+
 // Setup static assets
 // tell express.static() to look in 'public' for static assets
 app.use(express.static(__dirname + '/public'));
 
-// allow all re
+// allow all requests to be funneled to 'index.html' to be rendered
 app.get('/', (request, response) => {
 	response.send(__dirname + '/index.html');
 });
